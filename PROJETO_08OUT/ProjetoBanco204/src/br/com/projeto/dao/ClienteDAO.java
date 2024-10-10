@@ -6,8 +6,11 @@ package br.com.projeto.dao;
 
 import br.com.projeto.jdbc.ConnectionFactory;
 import br.com.projeto.model.ClienteModel;
+import java.util.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 
@@ -64,6 +67,33 @@ public class ClienteDAO {
         catch(Exception e){
             JOptionPane.showMessageDialog(null,
                "Erro no SQL: "+e.getMessage());
+        }
+    }
+    
+    public List<ClienteModel> listarClientes(){
+        try{
+           List<ClienteModel> lista = new ArrayList<>();
+           String sql = "SELECT * FROM CLIENTE";
+           
+           PreparedStatement pst = con.prepareStatement(sql);
+           ResultSet rs=pst.executeQuery();
+           
+           while(rs.next()){
+               ClienteModel clienteModel = new ClienteModel();
+               clienteModel.setCodcli(rs.getInt("cod")); 
+               clienteModel.setNome(rs.getString("nome")); 
+               clienteModel.setCpf(rs.getString("cpf")); 
+               clienteModel.setTelefone(rs.getString("telefone")); 
+               clienteModel.setBairro(rs.getString("bairro")); 
+               clienteModel.setEstado(rs.getString("estado")); 
+               clienteModel.setGenero(rs.getString("genero")); 
+               clienteModel.setNumero(rs.getInt("numero")); 
+               lista.add(clienteModel);
+           }
+           return lista;
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Erro na consulta ao banco de dados" + e.getMessage());
+            return null;
         }
     }
 }
